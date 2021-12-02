@@ -13,7 +13,7 @@ env:
 jobs:
   checks:
     name: Check if workflow needs to run
-    # runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       should-run: ${{ steps.checks.outputs.should-run }}
     steps:
