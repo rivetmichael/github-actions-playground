@@ -1,33 +1,33 @@
-name: Preflight
+# name: Preflight
 
-on:
-  pull_request:
-    types: [synchronize, opened, ready_for_review]
-    branches:
-      - 'main'
-      - 'develop'
-      - 'release/*'
-env:
-  PUSH_DOCKER_IMAGE: true
+# on:
+#   pull_request:
+#     types: [synchronize, opened, ready_for_review]
+#     branches:
+#       - 'main'
+#       - 'develop'
+#       - 'release/*'
+# env:
+#   PUSH_DOCKER_IMAGE: true
 
-jobs:
-  checks:
-    name: Check if workflow needs to run
-    runs-on: ubuntu-latest
-    outputs:
-      should-run: ${{ steps.checks.outputs.should-run }}
-    steps:
-      - name: Checks ?
-        id: checks
-        uses: actions/github-script@v5
-        with:
-          script: |
-            let shouldRun = true;
-            const invalid = context.payload.pull_request.labels.find( label => { return (label.name === 'dependencies' || label.name === 'block') } );
-            if (invalid !== undefined) {
-              shouldRun = false;
-            }
-            if (context.payload.pull_request.draft) {
-              shouldRun = false;
-            }
-            core.setOutput('should-run', shouldRun);
+# jobs:
+#   checks:
+#     name: Check if workflow needs to run
+#     runs-on: ubuntu-latest
+#     outputs:
+#       should-run: ${{ steps.checks.outputs.should-run }}
+#     steps:
+#       - name: Checks ?
+#         id: checks
+#         uses: actions/github-script@v5
+#         with:
+#           script: |
+#             let shouldRun = true;
+#             const invalid = context.payload.pull_request.labels.find( label => { return (label.name === 'dependencies' || label.name === 'block') } );
+#             if (invalid !== undefined) {
+#               shouldRun = false;
+#             }
+#             if (context.payload.pull_request.draft) {
+#               shouldRun = false;
+#             }
+#             core.setOutput('should-run', shouldRun);

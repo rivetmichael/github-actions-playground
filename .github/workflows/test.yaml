@@ -1,0 +1,15 @@
+name: test
+
+on:
+  gollum
+
+jobs:
+  checks:
+    name: Test
+    runs-on: ubuntu-latest
+    # outputs:
+    #   should-run: ${{ steps.checks.outputs.should-run }}
+    steps:
+      - name: Test
+        run: |
+          date

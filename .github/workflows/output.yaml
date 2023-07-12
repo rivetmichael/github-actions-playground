@@ -1,0 +1,7 @@
+# on: [push]
+
+# name: debug
+
+# jobs:
+#   test:
+#     name: test
