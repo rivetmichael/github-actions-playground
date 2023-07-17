@@ -1,0 +1,21 @@
+on:
+  workflow_dispatch:
+
+name: Manual
+
+jobs:
+  checks:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log(context)
+            console.log(context.inputs)
+      - name: Summary
+        run: |
+          echo "## Foo" >> $GITHUB_STEP_SUMMARY
+          echo "## Bar" >> $GITHUB_STEP_SUMMARY
+          echo "## Baz" >> $GITHUB_STEP_SUMMARY
