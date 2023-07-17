@@ -1,0 +1,15 @@
+on:
+  pull_request:
+    types: [closed]
+
+name: Merged PR
+
+jobs:
+  checks:
+    name: Test
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Test
+        run: |
+          echo "The pull request had been merged."
