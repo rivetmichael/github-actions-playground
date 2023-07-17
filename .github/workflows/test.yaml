@@ -18,4 +18,19 @@ jobs:
         with:
           script: |
             console.log(context)
-            console.log(octokit)
+      - uses: octokit/request-action@v2.x
+        id: create_check_run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          route: POST /repos/{owner}/{repo}/check-runs
+          owner: octokit
+          repo: request-action
+          name: "Test check run"
+          head_sha: ${{ github.sha }}
+          output: | # The | is significant!
+            title: Test check run title
+            summary: A summary of the test check run
+            images:
+              - alt: Test image
+                image_url: https://octodex.github.com/images/jetpacktocat.png
