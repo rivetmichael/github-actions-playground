@@ -1,5 +1,7 @@
 on:
   push:
+    branches:
+      - main
 
 name: test
 
@@ -7,9 +9,21 @@ jobs:
   checks:
     name: Test
     runs-on: ubuntu-latest
-    # outputs:
-    #   should-run: ${{ steps.checks.outputs.should-run }}
     steps:
-      - name: Test
-        run: |
-          date
+      - name: Output
+        uses: actions/github-script@v6
+        # env:
+        #   FIRST_NAME: Mona
+        #   LAST_NAME: Octocat
+        with:
+          script: |
+            console.log(context)
+            console.log()
+
+
+            octokit.rest.actions.createWorkflowDispatch({
+              'rivetmichael',
+              'github-actions-playground',
+              'Manual',
+              'main',
+            });
