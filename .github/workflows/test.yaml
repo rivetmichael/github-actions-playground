@@ -22,8 +22,8 @@ jobs:
 
 
             octokit.rest.actions.createWorkflowDispatch({
-              'rivetmichael',
-              'github-actions-playground',
-              'Manual',
-              'main',
+              "rivetmichael",
+              "github-actions-playground",
+              "Manual",
+              "main"
             });
