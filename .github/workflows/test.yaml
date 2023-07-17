@@ -18,12 +18,4 @@ jobs:
         with:
           script: |
             console.log(context)
-            console.log()
-
-
-            octokit.rest.actions.createWorkflowDispatch({
-              "rivetmichael",
-              "github-actions-playground",
-              "Manual",
-              "main"
-            });
+            console.log(octokit)
