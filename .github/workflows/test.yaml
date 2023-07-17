@@ -23,14 +23,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          route: POST /repos/{owner}/{repo}/check-runs
-          owner: rivetmichael
-          repo: github-actions-playground
-          name: "Manual"
-          head_sha: ${{ github.sha }}
-          output: | # The | is significant!
-            title: Test check run title
-            summary: A summary of the test check run
-            images:
-              - alt: Test image
-                image_url: https://octodex.github.com/images/jetpacktocat.png
+          route: POST /repos/rivetmichael/github-actions-playground/check-runs
+          # name: "Manual"
+          # head_sha: ${{ github.sha }}
+          # output: | # The | is significant!
+          #   title: Test check run title
+          #   summary: A summary of the test check run
+          #   images:
+          #     - alt: Test image
+          #       image_url: https://octodex.github.com/images/jetpacktocat.png
