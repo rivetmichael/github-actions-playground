@@ -24,9 +24,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           route: POST /repos/{owner}/{repo}/check-runs
-          owner: octokit
-          repo: request-action
-          name: "Test check run"
+          owner: rivetmichael
+          repo: github-actions-playground
+          name: "Manual"
           head_sha: ${{ github.sha }}
           output: | # The | is significant!
             title: Test check run title
