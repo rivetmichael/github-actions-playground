@@ -10,6 +10,8 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          gh api
     #   - name: Output
     #     uses: actions/github-script@v6
     #     id: workflow_dispatch
@@ -22,9 +24,13 @@ jobs:
     #           {ref: 'main'}
     #         )
     #         console.log(res)
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        cache: 'pip' # caching pip dependencies
-    - run: pip install -r requirements.txt
+    # - uses: actions/checkout@v3
+    # - uses: actions/setup-python@v4
+    #   with:
+    #     python-version: '3.11'
+    #     cache: 'pip' # caching pip dependencies
+    # - run: pip install -r requirements.txt
+    # - env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     python test.py
