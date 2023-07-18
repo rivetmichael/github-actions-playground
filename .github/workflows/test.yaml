@@ -10,8 +10,60 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          gh api
+      - uses: actions/checkout@v3
+      - id: requirements
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log(context)
+            core.setOutput('sha', context.sha)
+            core.setOutput('ref', context.ref)
+      - uses: actions/github-script@v6
+        id: create-tmp-branch
+        env:
+          SHA: ${{ steps.requirements.outputs.sha }}
+          REF: ${{ steps.requirements.outputs.ref }}
+        with:
+          script: |
+            console.log(process.env.SHA)
+            console.log(process.env.REF)
+            const ref = process.env.REF
+            regexp = /(refs\/heads\/)(.+)/g
+            const pieces = [...ref.matchAll(regexp)]
+
+            firstPart = pieces[0][1]
+            secondPart = pieces[0][2]
+
+            randomPart = `tmp-${context.runId}-${context.runNumber}-`
+            tmpBranch = `${firstPart}${randomPart}${secondPart}`
+
+            core.setOutput('tmp-branch-name', tmpBranch)
+      # - name: Install GH CLI
+      #   uses: dev-hanz-ops/install-gh-cli-action
+      #   with:
+      #       gh-cli-version: 2.32.0
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF: ${{ steps.create-tmp-branch.outputs.tmp-branch-name }}
+          SHA: ${{ steps.requirements.outputs.sha }}
+        run: |
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github.v3+json' \
+            /repos/rivetmichael/github-actions-playground/git/refs \
+            -f ref=$REF \
+            -f sha=$SHA
+
+          gh workflow run manual.yaml --ref ${REF}
+
+
+      # - uses: actions/github-script@v6
+      #   env:
+      #     TMP_BRANCH_NAME: ${{ steps.create-tmp-branch.outputs.tmpBranch }}
+      #   with:
+      #     script: |
+      #       gh api
+
     #   - name: Output
     #     uses: actions/github-script@v6
     #     id: workflow_dispatch

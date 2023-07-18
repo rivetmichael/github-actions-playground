@@ -1,5 +1,10 @@
 on:
   workflow_dispatch:
+    inputs:
+      branch_name:
+        required: false
+        type: string
+        description: Temporary branch name to use
 
 name: Manual
 
@@ -23,7 +28,7 @@ jobs:
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '30s'
+          time: '10s'
       - name: Output
         uses: actions/github-script@v6
         with:
