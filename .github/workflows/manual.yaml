@@ -8,6 +8,18 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            name/app
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
         with:
