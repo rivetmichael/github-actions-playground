@@ -28,6 +28,7 @@ jobs:
             console.log(process.env.SHA)
             console.log(process.env.REF)
             const ref = process.env.REF
+
             regexp = /(refs\/heads\/)(.+)/g
             const pieces = [...ref.matchAll(regexp)]
 
@@ -36,8 +37,10 @@ jobs:
 
             randomPart = `tmp-${context.runId}-${context.runNumber}-`
             tmpBranch = `${firstPart}${randomPart}${secondPart}`
+            tmpBranchShort = `${randomPart}${secondPart}`
 
             core.setOutput('tmp-branch-name', tmpBranch)
+            core.setOutput('tmp-branch-name-short', tmpBranchShort)
       # - name: Install GH CLI
       #   uses: dev-hanz-ops/install-gh-cli-action
       #   with:
@@ -46,43 +49,59 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REF: ${{ steps.create-tmp-branch.outputs.tmp-branch-name }}
           SHA: ${{ steps.requirements.outputs.sha }}
+        name: Trigger the manual workflow (could be local or remote repository)
         run: |
           gh api \
-            --method POST \
-            -H 'Accept: application/vnd.github.v3+json' \
-            /repos/rivetmichael/github-actions-playground/git/refs \
-            -f ref=$REF \
-            -f sha=$SHA
+          --method POST \
+          -H 'Accept: application/vnd.github.v3+json' \
+              /repos/rivetmichael/github-actions-playground/git/refs \
+              -f ref=$REF \
+              -f sha=$SHA
 
-          gh workflow run manual.yaml --ref ${REF}
+          gh workflow run manual.yaml -f branch_name=${REF} --ref ${REF}
+      - name: Sleep for 20 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '20s'
+      - name: Getting workflow data from branch ${{ steps.create-tmp-branch.outputs.tmp-branch-name-short }}
+        uses: actions/github-script@v6
+        id: getting-workflow-data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF: ${{ steps.create-tmp-branch.outputs.tmp-branch-name-short }}
+        with:
+          retries: 3
+          script: |
+            const { REF } = process.env
+            const wr = await github.rest.actions.listWorkflowRuns({
+              owner: "rivetmichael",
+              repo: "github-actions-playground",
+              workflow_id: "manual.yaml",
+              branch: `${REF}`
+            })
 
+            console.log(`ref: ${REF}`)
+            console.log(wr.data.workflow_runs)
+            console.log(wr.data.workflow_runs[0])
+            console.log(wr.data.workflow_runs[0].name)
+            console.log(wr.data.workflow_runs[0].html_url)
 
-      # - uses: actions/github-script@v6
-      #   env:
-      #     TMP_BRANCH_NAME: ${{ steps.create-tmp-branch.outputs.tmpBranch }}
-      #   with:
-      #     script: |
-      #       gh api
+            core.setOutput('workflow_html_url', wr.data.workflow_runs[0].html_url)
+            core.setOutput('workflow', wr.data.workflow_runs[0])
 
-    #   - name: Output
-    #     uses: actions/github-script@v6
-    #     id: workflow_dispatch
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     with:
-    #       script: |
+      - uses: WcAServices/markdown-template-action@v1.0.2
+        name: Generating output
+        with:
+          variables: >-
+            WORKFLOW="${{ steps.getting-workflow-data.outputs.workflow }}"
+            WORKFLOW_HTML_URL="${{ steps.getting-workflow-data.outputs.workflow_html_url }}"
+          template: |
+            #### Workflow dispatch info:
 
-    #         const res = await github.request("POST /repos/rivetmichael/github-actions-playground/actions/workflows/manual.yaml/dispatches",
-    #           {ref: 'main'}
-    #         )
-    #         console.log(res)
-    # - uses: actions/checkout@v3
-    # - uses: actions/setup-python@v4
-    #   with:
-    #     python-version: '3.11'
-    #     cache: 'pip' # caching pip dependencies
-    # - run: pip install -r requirements.txt
-    # - env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     python test.py
+            ##### Workflow URL
+            ${WORKFLOW_HTML_URL}
+
+            ##### Workflow payload
+            ```yaml
+            ${WORKFLOW}
+            ```

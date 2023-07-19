@@ -25,22 +25,27 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-      - name: Sleep for 30 seconds
+      # - name: Failing
+      #   run: |
+      #     exit 127
+      - name: Sleep for 20 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '10s'
-      - name: Output
+          time: '20s'
+      - name: Debug input's payload
         uses: actions/github-script@v6
         with:
           script: |
+            console.log(context.payload.inputs)
             console.log(context)
-            console.log(context.inputs)
-      - name: Summary
-        run: |
-          echo "## Foo" >> $GITHUB_STEP_SUMMARY
-          echo "## Bar" >> $GITHUB_STEP_SUMMARY
-          echo "## Baz" >> $GITHUB_STEP_SUMMARY
-      - uses: WcAServices/markdown-template-action@v1.0.2
+      # - name: Summary
+      #   run: |
+      #     echo "## Foo" >> $GITHUB_STEP_SUMMARY
+      #     echo "## Bar" >> $GITHUB_STEP_SUMMARY
+      #     echo "## Baz" >> $GITHUB_STEP_SUMMARY
+      -
+        name: Output
+        uses: WcAServices/markdown-template-action@v1.0.2
         with:
           # These will be injected into the below template, in addition to GitHub's standard
           # variables. You can perform string operations here as well.
@@ -48,12 +53,12 @@ jobs:
             GREETING="world"
             COMMIT_SHA="${{ github.sha }}"
             SHORT_SHA=${COMMIT_SHA:0:7}
+            INPUTS="${{ toJson(github.event.inputs) }}"
 
           # The following language="..." comment enables syntax highlighting in JetBrains IDEs
 
           # language="markdown"
           template: |
-            # Hello, $GREETING
             > ### You're on commit [`$SHORT_SHA`]($COMMIT_SHA)
 
             ##### Standard GitHub variables should work too:
@@ -61,4 +66,30 @@ jobs:
             Github Ref: $GITHUB_REF
             Commit author: $GITHUB_ACTOR
             Job: $GITHUB_JOB
+            ```
+            ##### Received event inputs:
+            ```json
+            $INPUTS
+            ```
+      -
+        if: ${{ always() && github.event.inputs.branch_name != '' }}
+        name: "Cleaning branch ${{ github.event.inputs.branch_name }}"
+        id: cleaning-tmp-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ github.event.inputs.branch_name }}
+        run: |
+          gh api \
+            --method DELETE \
+            -H 'Accept: application/vnd.github.v3+json' \
+            /repos/rivetmichael/github-actions-playground/git/${BRANCH_NAME}
+      - uses: WcAServices/markdown-template-action@v1.0.2
+        if: ${{ steps.cleaning-tmp-branch.outcome == 'success' }}
+        with:
+          variables: >-
+            BRANCH_NAME="${{ github.event.inputs.branch_name }}"
+          template: |
+            ##### Branch deletion:
+            ```yaml
+            branch name: ${BRANCH_NAME}
             ```
