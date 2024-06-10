@@ -5,10 +5,15 @@ on:
 
 name: test
 
+env:
+  SERVICE_NAME: ${{ vars.SERVICE_NAME || 'default' }}
+
 jobs:
   checks:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - run: |
+          env
 
