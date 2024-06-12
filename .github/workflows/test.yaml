@@ -12,6 +12,9 @@ jobs:
   checks:
     name: Test
     runs-on: ubuntu-latest
+    environment:
+      name: testing
+      url: ''
     steps:
       - uses: actions/checkout@v4
       - run: |
