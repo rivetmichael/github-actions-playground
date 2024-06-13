@@ -56,7 +56,7 @@ jobs:
           TENANT: ${{ steps.variables.outputs.tenant }}
         run: echo "## From tenant 🌍 $TENANT " >> $GITHUB_STEP_SUMMARY
       - run: |
-          sleep 30
+          exit 1
       - name: Update deployment status (success)
         if: success()
         uses: chrnorm/deployment-status@v2
@@ -64,3 +64,10 @@ jobs:
           token: '${{ github.token }}'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
           state: 'success'
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ github.token }}'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          state: 'failure'
