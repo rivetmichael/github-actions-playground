@@ -26,8 +26,6 @@ jobs:
     name: Test
     needs: [matrix]
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ steps.variables.outputs.environment }}
     outputs:
       service: ${{ steps.variables.outputs.service }}
       environment: ${{ steps.variables.outputs.environment }}
