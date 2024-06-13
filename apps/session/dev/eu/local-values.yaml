@@ -1,0 +1,21 @@
+domains:
+  - session.dev.coachhub.cloud
+
+extraLabels:
+  environment: 'dev'
+  team: 'phoenix'
+  region: 'eu-1'
+
+secrets:
+  enabled: yes
+  msk_enabled: yes
+  aws_msk_secret_arn: 'arn:aws:secretsmanager:eu-central-1:454131546112:secret:AmazonMSK_coachhub_service_dev_session__6nCA87Ckr0-sTUKvq'
+  aws_secret_arn: 'arn:aws:secretsmanager:eu-central-1:454131546112:secret:service-session-7lFQwK'
+  secret_data:
+  - DATABASE_URL
+  - JWT_SECRET_KEY
+  - LAUNCH_DARKLY_SDK_KEY
+
+configmap_data:
+  CORS_ORIGINS: 'https://mono.dev.coachhub.cloud,https://frontend.dev.coachhub.cloud,https://coach-scheduling.dev.coachhub.cloud,https://coach-scheduling-preview-10.dev.coachhub.cloud,http://localhost:3000,http://localhost:4200,http://localhost:4201,http://localhost:4202,http://localhost:4203,http://localhost:4204,http://localhost:4205,http://localhost:4206,http://localhost:4207,http://localhost:4208,http://localhost:4209,http://localhost:4210,http://localhost:4211,http://localhost:4212'
+  REGION_ID: eu-1
