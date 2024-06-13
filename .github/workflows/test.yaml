@@ -45,4 +45,4 @@ jobs:
         with:
           token: '${{ github.token }}'
           environment: dev-eu
-          initial-status: 'success'
+          state: 'success'
