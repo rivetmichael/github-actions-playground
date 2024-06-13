@@ -43,6 +43,13 @@ jobs:
           echo "service=$(echo $filename  | cut -d/ -f3)" >> $GITHUB_OUTPUT
           echo "environment=$(echo $filename  | cut -d/ -f4)" >> $GITHUB_OUTPUT
           echo "tenant=$(echo $filename  | cut -d/ -f5)" >> $GITHUB_OUTPUT
+      - uses: chrnorm/deployment-action@v2
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: '${{ github.token }}'
+          # environment-url: http://my-app-url.com
+          environment: ${{ steps.variables.outputs.environment }}
       - name: testing output ?!
         run: |
           echo ${{ steps.variables.outputs.tenant }}
