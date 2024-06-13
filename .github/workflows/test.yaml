@@ -47,4 +47,4 @@ jobs:
       - name: Adding markdown
         env:
           TENANT: ${{ steps.variables.outputs.tenant }}
-        run: echo "### From tenant 🪐 : $TENANT " >> $GITHUB_STEP_SUMMARY
+        run: echo 'From tenant : $TENANT ' >> $GITHUB_STEP_SUMMARY
