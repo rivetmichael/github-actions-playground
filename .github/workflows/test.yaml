@@ -41,33 +41,8 @@ jobs:
           echo "service=$(echo $filename  | cut -d/ -f3)" >> $GITHUB_OUTPUT
           echo "environment=$(echo $filename  | cut -d/ -f4)" >> $GITHUB_OUTPUT
           echo "tenant=$(echo $filename  | cut -d/ -f5)" >> $GITHUB_OUTPUT
-      - uses: chrnorm/deployment-action@v2
-        name: Create GitHub deployment
-        id: deployment
+      - uses: chrnorm/deployment-status@v2
         with:
           token: '${{ github.token }}'
-          # environment-url: http://my-app-url.com
-          environment: ${{ steps.variables.outputs.environment }}-${{ steps.variables.outputs.tenant }}
-      - name: testing output ?!
-        run: |
-          echo ${{ steps.variables.outputs.tenant }}
-      # - name: Adding markdown
-      #   env:
-      #     TENANT: ${{ steps.variables.outputs.tenant }}
-      #   run: echo "## From tenant 🌍 $TENANT " >> $GITHUB_STEP_SUMMARY
-      - run: |
-          sleep 10
-      - name: Update deployment status (success)
-        if: success()
-        uses: chrnorm/deployment-status@v2
-        with:
-          token: '${{ github.token }}'
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
-          state: 'success'
-      - name: Update deployment status (failure)
-        if: failure()
-        uses: chrnorm/deployment-status@v2
-        with:
-          token: '${{ github.token }}'
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
-          state: 'failure'
+          name: dev-eu
+          initial-status: 'success'
