@@ -32,4 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          echo ${{ matrix.tenant }}  
+          export filename=${{ matrix.tenant }}  
+          echo "service=$(echo $filename  | cut -d/ -f3)" >> $GITHUB_OUTPUT
+          echo "environment=$(echo $filename  | cut -d/ -f4)" >> $GITHUB_OUTPUT
+          echo "tenant=$(echo $filename  | cut -d/ -f5)" >> $GITHUB_OUTPUT
