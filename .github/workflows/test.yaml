@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: set-matrix
-        run: echo "name=matrix::$(ls ./apps/session/*/*/local-values.yaml | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+        run: echo "name=matrix=$(ls ./apps/session/*/*/local-values.yaml | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
     
   checks:
     name: Test
