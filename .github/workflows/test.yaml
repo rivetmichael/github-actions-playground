@@ -18,6 +18,7 @@ jobs:
       - id: set-matrix
         run: |
           export matrix=$(ls ./apps/session/*/*/local-values.yaml | jq -R -s -c 'split("\n")[:-1]')
+          echo $matrix
           echo "name=matrix=$(echo $matrix)" >> $GITHUB_OUTPUT
     
   checks:
