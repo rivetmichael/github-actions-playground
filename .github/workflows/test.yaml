@@ -44,4 +44,5 @@ jobs:
       - name: testing output ?!
         run: |
           echo ${{ steps.variables.outputs.tenant }}
-
+      - name: Adding markdown
+        run: echo "### From tenant 🪐 : ${{ steps.variables.outputs.tenant }} " >> $GITHUB_STEP_SUMMARY
