@@ -51,10 +51,10 @@ jobs:
       - name: testing output ?!
         run: |
           echo ${{ steps.variables.outputs.tenant }}
-      - name: Adding markdown
-        env:
-          TENANT: ${{ steps.variables.outputs.tenant }}
-        run: echo "## From tenant 🌍 $TENANT " >> $GITHUB_STEP_SUMMARY
+      # - name: Adding markdown
+      #   env:
+      #     TENANT: ${{ steps.variables.outputs.tenant }}
+      #   run: echo "## From tenant 🌍 $TENANT " >> $GITHUB_STEP_SUMMARY
       - run: |
           sleep 10
       - name: Update deployment status (success)
