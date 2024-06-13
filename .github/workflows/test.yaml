@@ -44,5 +44,5 @@ jobs:
       - uses: chrnorm/deployment-status@v2
         with:
           token: '${{ github.token }}'
-          name: dev-eu
+          environment: dev-eu
           initial-status: 'success'
