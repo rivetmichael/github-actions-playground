@@ -26,13 +26,22 @@ jobs:
     name: Test
     needs: [matrix]
     runs-on: ubuntu-latest
+    outputs:
+      service: ${{ steps.variables.outputs.service }}
+      environment: ${{ steps.variables.outputs.environment }}
+      tenant: ${{ steps.variables.outputs.servitenantce }}
     strategy:
       matrix:
         tenant: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - run: |
+      - id: variables
+        run: |
           export filename=${{ matrix.tenant }}  
           echo "service=$(echo $filename  | cut -d/ -f3)" >> $GITHUB_OUTPUT
           echo "environment=$(echo $filename  | cut -d/ -f4)" >> $GITHUB_OUTPUT
           echo "tenant=$(echo $filename  | cut -d/ -f5)" >> $GITHUB_OUTPUT
+      - name: testing output ?!
+        run: |
+          echo ${{ steps.variables.outputs.tenant }}
+
