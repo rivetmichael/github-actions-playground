@@ -47,7 +47,7 @@ jobs:
         with:
           token: '${{ github.token }}'
           # environment-url: http://my-app-url.com
-          environment: ${{ steps.variables.outputs.environment }}
+          environment: ${{ steps.variables.outputs.environment }}-${{ steps.variables.outputs.tenant }}
       - name: testing output ?!
         run: |
           echo ${{ steps.variables.outputs.tenant }}
@@ -55,6 +55,8 @@ jobs:
         env:
           TENANT: ${{ steps.variables.outputs.tenant }}
         run: echo "## From tenant 🌍 $TENANT " >> $GITHUB_STEP_SUMMARY
+      - run: |
+          sleep 30
       - name: Update deployment status (success)
         if: success()
         uses: chrnorm/deployment-status@v2
