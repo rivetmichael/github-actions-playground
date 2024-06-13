@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       service: ${{ steps.variables.outputs.service }}
-      environment: ${{ steps.variables.outputs.environment }}
+      environment: ${{ steps.variables.outputs.environment }}-${{ steps.variables.outputs.servitenantce }}
       tenant: ${{ steps.variables.outputs.servitenantce }}
     strategy:
       matrix:
@@ -47,7 +47,7 @@ jobs:
         with:
           token: '${{ github.token }}'
           # environment-url: http://my-app-url.com
-          environment: ${{ steps.variables.outputs.environment }}-${{ steps.variables.outputs.tenant }}
+          environment: ${{ steps.variables.outputs.environment }}
       - name: testing output ?!
         run: |
           echo ${{ steps.variables.outputs.tenant }}
