@@ -21,7 +21,7 @@ jobs:
           echo $matrix
           echo "date=$(date)" >> $GITHUB_OUTPUT
           echo "matrix=$(echo $matrix)" >> $GITHUB_OUTPUT
-    
+
   checks:
     name: Test
     needs: [matrix]
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: variables
         run: |
-          export filename=${{ matrix.tenant }}  
+          export filename=${{ matrix.tenant }}
           echo "service=$(echo $filename  | cut -d/ -f3)" >> $GITHUB_OUTPUT
           echo "environment=$(echo $filename  | cut -d/ -f4)" >> $GITHUB_OUTPUT
           echo "tenant=$(echo $filename  | cut -d/ -f5)" >> $GITHUB_OUTPUT

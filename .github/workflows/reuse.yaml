@@ -1,0 +1,55 @@
+on:
+  push:
+    branches:
+      - main
+
+name: reuse
+
+env:
+  SERVICE_NAME: ${{ vars.SERVICE_NAME || 'default' }}
+
+jobs:
+  generate-variables:
+    name: generate-variables
+    runs-on: ubuntu-latest
+
+    outputs:
+      IMAGE_TAG: ${{ env.image_tag }}
+
+    steps:
+    - name: Get current branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v8
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/coachhubio/ch-sre.${{ env.SERVICE_NAME }}/$SERVICE_NAME
+        tags: |
+          type=sha
+
+    - name: Generate Image tag
+      run: |
+        TAGS=${{ steps.meta.outputs.tags }}
+        IMAGE_TAG=$(echo $TAGS | sed 's/.*\(...........\)/\1/')
+        echo image_tag=$IMAGE_TAG >> "$GITHUB_ENV"
+
+    - uses: WcAServices/markdown-template-action@v1
+      with:
+        template: |
+          # Deploying development and staging environment
+          ```yaml
+          Github Ref: $GITHUB_REF
+          Commit author: $GITHUB_ACTOR
+          Docker Image Tag: ${{ env.image_tag }}
+          Branch: ${{ steps.branch-name.outputs.current_branch }}
+          ----
+          commit User Name: ${{ github.event.pusher.name }}
+          commit User Email: ${{ github.event.pusher.email }}
+
+    - name: Output
+      uses: actions/github-script@v7
+      with:
+        script: |
+          console.log(context)
